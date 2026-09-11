@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DATA BRAIN</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --bg-main: #F6F7FB;
+      --primary: #7C5CFC;
+      --primary-dark: #6842ED;
+      --text-main: #1E1B4B;
+      --text-muted: #64748B;
+    }
+    body {
+      background: radial-gradient(circle at 12% 15%, rgba(255, 235, 238, 0.65) 0%, transparent 35%),
+                  radial-gradient(circle at 88% 12%, rgba(237, 233, 254, 0.7) 0%, transparent 40%),
+                  radial-gradient(circle at 50% 90%, rgba(243, 232, 255, 0.6) 0%, transparent 45%),
+                  #F6F7FB;
+      color: #1E1B4B;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(124, 92, 252, 0.2);
+      border-radius: 3px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(124, 92, 252, 0.4);
+    }
+
+    /* Splash Screen & Letter Drop Keyframes */
+    @keyframes letterDrop {
+      0% {
+        opacity: 0;
+        transform: translateY(-90px) scale(0.65) rotate(-6deg);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(12px) scale(1.08) rotate(1deg);
+      }
+      80% {
+        transform: translateY(-4px) scale(0.97) rotate(0deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+      }
+    }
+
+    .drop-letter {
+      display: inline-block;
+      opacity: 0;
+      animation: letterDrop 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes logoPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(-50px);
+      }
+      65% {
+        opacity: 1;
+        transform: scale(1.08) translateY(6px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .splash-logo-container {
+      opacity: 0;
+      animation: logoPop 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes fadeInSub {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .splash-subtitle {
+      opacity: 0;
+      animation: fadeInSub 0.6s ease-out 0.88s forwards;
+    }
+
+    @keyframes progressAnim {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    .splash-progress {
+      width: 0%;
+      animation: progressAnim 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
+    }
+
+    .curtain-up {
+      transform: translateY(-100%) !important;
+      transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1) !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- Animated Splash Screen / Curtain Overlay -->
+  <div id="splashScreen" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#F6F7FB] select-none pointer-events-auto">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,235,238,0.85)_0%,transparent_40%),radial-gradient(circle_at_80%_20%,rgba(237,233,254,0.9)_0%,transparent_45%),radial-gradient(circle_at_50%_80%,rgba(243,232,255,0.85)_0%,transparent_50%)] pointer-events-none"></div>
+
+    <div class="relative z-10 flex flex-col items-center text-center px-4">
+      <!-- Animated Logo -->
+      <div class="splash-logo-container mb-6">
+        <img src="logo.png?v=2" alt="DATA BRAIN" class="w-24 h-24 md:w-28 md:h-28 object-contain rounded-3xl p-2 bg-white/95 shadow-[0_16px_40px_-8px_rgba(124,92,252,0.3)] border border-white">
+      </div>
+
+      <!-- Letter by letter drop for DATA BRAIN -->
+      <h1 class="text-4xl md:text-6xl font-black tracking-wider flex items-center justify-center flex-wrap mb-3">
+        <span class="drop-letter text-[#0B1B4F]" style="animation-delay: 0.08s;">D</span>
+        <span class="drop-letter text-[#0B1B4F]" style="animation-delay: 0.16s;">A</span>
+        <span class="drop-letter text-[#0B1B4F]" style="animation-delay: 0.24s;">T</span>
+        <span class="drop-letter text-[#0B1B4F]" style="animation-delay: 0.32s;">A</span>
+        <span class="w-3 md:w-4 inline-block"></span>
+        <span class="drop-letter text-transparent bg-clip-text bg-gradient-to-r from-[#0066FF] to-[#7C5CFC]" style="animation-delay: 0.44s;">B</span>
+        <span class="drop-letter text-transparent bg-clip-text bg-gradient-to-r from-[#0066FF] to-[#7C5CFC]" style="animation-delay: 0.52s;">R</span>
+        <span class="drop-letter text-transparent bg-clip-text bg-gradient-to-r from-[#0066FF] to-[#7C5CFC]" style="animation-delay: 0.60s;">A</span>
+        <span class="drop-letter text-transparent bg-clip-text bg-gradient-to-r from-[#0066FF] to-[#7C5CFC]" style="animation-delay: 0.68s;">I</span>
+        <span class="drop-letter text-transparent bg-clip-text bg-gradient-to-r from-[#0066FF] to-[#7C5CFC]" style="animation-delay: 0.76s;">N</span>
+      </h1>
+
+      <!-- Subtitle fade in -->
+      <p class="splash-subtitle text-xs md:text-sm text-[#64748B] font-medium tracking-wide max-w-sm">
+        From CSV to Intelligent Answers
+      </p>
+
+      <!-- Elegant loading progress indicator -->
+      <div class="mt-8 w-44 h-1.5 bg-[#E8E8F5] rounded-full overflow-hidden shadow-inner">
+        <div class="splash-progress h-full bg-gradient-to-r from-[#0066FF] via-[#7C5CFC] to-[#FF7597] rounded-full"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clean Minimal Navigation Header -->
+  <header class="bg-white/80 backdrop-blur-md border-b border-[#E8E8F2] sticky top-0 z-50 px-6 py-3 flex items-center justify-between shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+    <div class="flex items-center gap-3 cursor-pointer group" onclick="triggerSplash()" title="Click to replay intro animation">
+      <img src="logo.png?v=2" alt="DATA BRAIN" class="w-10 h-10 object-contain rounded-xl shadow-sm bg-white p-0.5 border border-[#E8E8F2] group-hover:scale-105 transition transform">
+      <div class="flex flex-col">
+        <span class="font-bold text-base text-[#1E1B4B] tracking-wide leading-tight group-hover:text-[#7C5CFC] transition">DATA BRAIN</span>
+        <span class="text-[10px] text-[#64748B] font-medium tracking-tight">From CSV to Intelligent Answers</span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="flex items-center gap-1.5 bg-[#ECECF5]/70 p-1.5 rounded-2xl border border-[#E2E4F0]">
+      <button id="tabBtnUpload" onclick="switchSection('upload')" class="px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-gradient-to-r from-[#7C5CFC] to-[#6842ED] text-white shadow-[0_4px_14px_rgba(124,92,252,0.35)]">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+        <span>Upload CSV</span>
+      </button>
+      <button id="tabBtnChat" onclick="switchSection('chat')" class="px-4 py-2 rounded-xl text-xs font-semibold text-[#64748B] hover:text-[#1E1B4B] transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        <span>Chatbot</span>
+        <span id="chatReadyBadge" class="hidden w-2 h-2 rounded-full bg-[#7C5CFC]"></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-8">
+
+    <!-- ======================================================== -->
+    <!-- SECTION 1: UPLOAD CSV (Dedicated Screen)                   -->
+    <!-- ======================================================== -->
+    <div id="sectionUpload" class="space-y-6">
+      <div class="bg-white/90 backdrop-blur-xl border border-white rounded-3xl p-6 md:p-8 shadow-[0_20px_45px_-15px_rgba(112,72,232,0.08)] space-y-6">
+        <div class="border-b border-[#F0F0F7] pb-4">
+          <h2 class="text-lg font-bold text-[#1E1B4B]">Upload Dataset</h2>
+          <p class="text-xs text-[#64748B] mt-0.5">Select or drag & drop any CSV file with arbitrary column names</p>
+        </div>
+
+        <!-- Dropzone -->
+        <div id="dropzone" onclick="document.getElementById('fileInput').click()" class="border-2 border-dashed border-[#DDD6FE] hover:border-[#7C5CFC] rounded-2xl p-8 text-center cursor-pointer transition bg-[#FAF9FF] hover:bg-[#F3F0FF] group">
+          <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-[#EDE9FE] text-[#7C5CFC] flex items-center justify-center text-2xl group-hover:scale-110 transition transform shadow-sm">
+            📁
+          </div>
+          <div id="dropzoneText" class="text-sm font-semibold text-[#1E1B4B]">Drag & Drop your CSV file here, or click to browse</div>
+          <div class="text-xs text-[#64748B] mt-1">Accepts any tabular format (.csv)</div>
+          <input type="file" id="fileInput" class="hidden" accept=".csv" onchange="handleFileSelect(event)">
+        </div>
+
+        <!-- Upload Action Button -->
+        <button id="btnUpload" onclick="startIngestion()" disabled class="w-full bg-gradient-to-r from-[#7C5CFC] to-[#6842ED] hover:from-[#6C4AEF] hover:to-[#5833DB] disabled:opacity-40 disabled:cursor-not-allowed text-white font-medium py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 transition shadow-[0_10px_25px_-5px_rgba(124,92,252,0.4)] text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+          Upload & Ingest CSV
+        </button>
+
+        <!-- CSV Preview Area -->
+        <div id="previewArea" class="hidden space-y-2 pt-2">
+          <div class="flex items-center justify-between text-xs text-[#64748B]">
+            <span class="font-medium text-[#1E1B4B]">File Preview (First 5 Rows)</span>
+            <span id="previewCount" class="font-mono text-[#7C5CFC] font-semibold"></span>
+          </div>
+          <div class="overflow-x-auto max-h-52 border border-[#E8E8F2] rounded-2xl bg-white shadow-sm custom-scroll">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-[#F8F8FC] sticky top-0 text-[#475569] font-semibold border-b border-[#E8E8F2]" id="tableHead"></thead>
+              <tbody class="divide-y divide-[#F1F1F8] text-[#1E1B4B]" id="tableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Ingestion Progress Card -->
+        <div id="statusBox" class="hidden bg-[#FBFBFE] border border-[#E8E8F2] rounded-2xl p-5 space-y-4 shadow-sm">
+          <div class="flex justify-between items-center">
+            <div>
+              <span id="lblFilename" class="text-sm font-semibold text-[#1E1B4B]">dataset.csv</span>
+              <p id="lblJobId" class="text-[11px] font-mono text-[#64748B] mt-0.5">Job ID: -</p>
+            </div>
+            <span id="badgeStatus" class="text-xs font-bold px-3 py-1 rounded-full uppercase bg-[#EDE9FE] text-[#6D28D9] border border-[#DDD6FE]">QUEUED</span>
+          </div>
+
+          <!-- Progress Bar with Purple to Pink Gradient -->
+          <div class="w-full h-3 bg-[#EAEAF4] rounded-full overflow-hidden">
+            <div id="progressBar" class="h-full bg-gradient-to-r from-[#7C5CFC] via-[#A78BFA] to-[#FF7597] transition-all duration-300" style="width: 0%"></div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 text-center text-xs">
+            <div class="bg-white p-3 rounded-xl border border-[#E8E8F2] shadow-sm">
+              <div class="text-[#64748B] text-[11px]">Total Rows</div>
+              <div id="valTotal" class="font-bold text-[#1E1B4B] text-base mt-0.5">0</div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-[#E8E8F2] shadow-sm">
+              <div class="text-[#059669] text-[11px]">Loaded</div>
+              <div id="valLoaded" class="font-bold text-[#059669] text-base mt-0.5">0</div>
+            </div>
+            <div class="bg-white p-3 rounded-xl border border-[#E8E8F2] shadow-sm">
+              <div class="text-[#DC2626] text-[11px]">Failed</div>
+              <div id="valFailed" class="font-bold text-[#DC2626] text-base mt-0.5">0</div>
+            </div>
+          </div>
+
+          <!-- Open Chatbot Button after completion -->
+          <div id="btnGoToChatContainer" class="hidden pt-2">
+            <button onclick="switchSection('chat')" class="w-full bg-gradient-to-r from-[#7C5CFC] to-[#6842ED] hover:from-[#6C4AEF] hover:to-[#5833DB] text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-[0_8px_20px_-4px_rgba(124,92,252,0.35)] text-sm">
+              <span>Open Chatbot to Query This Data</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SECTION 2: CHATBOT (Dedicated Screen)                      -->
+    <!-- ======================================================== -->
+    <div id="sectionChat" class="hidden space-y-4">
+      <div class="bg-white/90 backdrop-blur-xl border border-white rounded-3xl p-6 shadow-[0_20px_45px_-15px_rgba(112,72,232,0.08)] flex flex-col h-[740px]">
+
+        <!-- Top Chat Header & Active Dataset Indicator -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#F0F0F7] pb-4 mb-3">
+          <div>
+            <h2 class="text-base font-bold text-[#1E1B4B]">Grounded Chatbot</h2>
+            <p class="text-xs text-[#64748B]">Queries are translated directly into graph queries and answered with verified data</p>
+          </div>
+          <div id="activeDatasetTag" class="text-xs bg-[#F0EEFF] text-[#6842ED] border border-[#DDD6FE] px-3.5 py-1.5 rounded-full font-medium shadow-sm">
+            Active Dataset: <span id="lblActiveDataName" class="font-semibold">None</span> (<span id="lblActiveDataRows" class="font-semibold">0</span> rows)
+          </div>
+        </div>
+
+        <!-- Dynamic Question Suggestions (Generated after CSV ingestion) -->
+        <div id="dynamicChipsContainer" class="hidden flex flex-wrap gap-1.5 mb-3"></div>
+
+        <!-- Scrollable Messages History -->
+        <div id="chatHistory" class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scroll">
+          <div class="bg-gradient-to-r from-[#F8F7FF] to-[#FFF8F6] border border-[#E9D5FF] rounded-2xl p-4 text-xs text-[#475569] space-y-1 shadow-sm">
+            <div class="text-[#7C5CFC] font-semibold flex items-center gap-1.5">
+              <span>●</span> Grounded Verification Ready
+            </div>
+            <p>Upload a CSV dataset in the <strong>Upload CSV</strong> tab to begin. Every answer is queried directly from the knowledge graph with zero hallucination.</p>
+          </div>
+        </div>
+
+        <!-- Chat Input Bar -->
+        <div class="mt-3 flex gap-2 pt-3 border-t border-[#F0F0F7]">
+          <input id="chatInput" type="text" placeholder="Ask a question about the uploaded data (e.g. 'how many rows', 'give me the name and role of 4')..." onkeydown="if(event.key==='Enter') sendChat()" class="flex-1 bg-white border border-[#E2E8F0] focus:border-[#7C5CFC] focus:ring-2 focus:ring-[#7C5CFC]/20 rounded-2xl px-4 py-3 text-xs text-[#1E1B4B] placeholder-[#94A3B8] focus:outline-none transition shadow-sm">
+          <button onclick="sendChat()" class="bg-gradient-to-r from-[#7C5CFC] to-[#6842ED] hover:from-[#6C4AEF] hover:to-[#5833DB] text-white text-xs font-semibold px-5 py-3 rounded-2xl transition flex items-center gap-1.5 shadow-[0_6px_18px_rgba(124,92,252,0.35)]">
+            <span>Send</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let activeCSV = null;
+    let activeFilename = "";
+    let parsedData = [];
+    let currentHeaders = [];
+    let graphLoaded = false;
+    let graphRows = [];
+
+    // Section Switching Logic
+    function switchSection(section) {
+      const secUpload = document.getElementById("sectionUpload");
+      const secChat = document.getElementById("sectionChat");
+      const tabUpload = document.getElementById("tabBtnUpload");
+      const tabChat = document.getElementById("tabBtnChat");
+
+      if (section === "upload") {
+        secUpload.classList.remove("hidden");
+        secChat.classList.add("hidden");
+        tabUpload.className = "px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-gradient-to-r from-[#7C5CFC] to-[#6842ED] text-white shadow-[0_4px_14px_rgba(124,92,252,0.35)]";
+        tabChat.className = "px-4 py-2 rounded-xl text-xs font-semibold text-[#64748B] hover:text-[#1E1B4B] transition flex items-center gap-2";
+      } else {
+        secUpload.classList.add("hidden");
+        secChat.classList.remove("hidden");
+        tabChat.className = "px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-gradient-to-r from-[#7C5CFC] to-[#6842ED] text-white shadow-[0_4px_14px_rgba(124,92,252,0.35)]";
+        tabUpload.className = "px-4 py-2 rounded-xl text-xs font-semibold text-[#64748B] hover:text-[#1E1B4B] transition flex items-center gap-2";
+        setTimeout(() => document.getElementById("chatInput").focus(), 100);
+      }
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => processCSVContent(evt.target.result, file.name);
+      reader.readAsText(file);
+    }
+
+    function processCSVContent(text, filename) {
+      activeCSV = text;
+      activeFilename = filename;
+      const lines = text.trim().split(/\r\n|\n/).filter(l => l.trim() !== "");
+      if (lines.length === 0) return;
+
+      currentHeaders = lines[0].split(",").map(h => h.trim());
+      parsedData = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const parts = lines[i].split(",").map(p => p.trim());
+        const row = {};
+        currentHeaders.forEach((h, idx) => {
+          let val = parts[idx] || "";
+          if (!isNaN(val) && val !== "") val = Number(val);
+          row[h] = val;
+        });
+        parsedData.push(row);
+      }
+
+      // Update UI
+      document.getElementById("dropzoneText").innerHTML = `Selected file: <strong>${escapeHtml(filename)}</strong> (${parsedData.length} data rows)`;
+      document.getElementById("btnUpload").disabled = false;
+
+      // Render preview table
+      const thead = document.getElementById("tableHead");
+      thead.innerHTML = "<tr>" + currentHeaders.map(h => `<th class="py-2.5 px-3 border-b border-[#E8E8F2] font-semibold text-[#475569]">${escapeHtml(h)}</th>`).join("") + "</tr>";
+
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = parsedData.slice(0, 5).map(r => {
+        return "<tr class='hover:bg-[#FAF9FF] transition'>" + currentHeaders.map(h => `<td class="py-2.5 px-3 font-mono text-[#1E1B4B]">${escapeHtml(r[h])}</td>`).join("") + "</tr>";
+      }).join("");
+
+      document.getElementById("previewCount").textContent = `${currentHeaders.length} columns, ${parsedData.length} total rows`;
+      document.getElementById("previewArea").classList.remove("hidden");
+    }
+
+    function startIngestion() {
+      if (!parsedData.length) return;
+      const btn = document.getElementById("btnUpload");
+      btn.disabled = true;
+
+      const statusBox = document.getElementById("statusBox");
+      statusBox.classList.remove("hidden");
+      document.getElementById("lblFilename").textContent = activeFilename;
+      document.getElementById("lblJobId").textContent = "Job ID: " + crypto.randomUUID();
+      document.getElementById("badgeStatus").className = "text-xs font-bold px-3 py-1 rounded-full uppercase bg-[#EDE9FE] text-[#6D28D9] border border-[#DDD6FE]";
+      document.getElementById("badgeStatus").textContent = "QUEUED";
+
+      const total = parsedData.length;
+      document.getElementById("valTotal").textContent = total;
+      document.getElementById("valLoaded").textContent = "0";
+      document.getElementById("valFailed").textContent = "0";
+      document.getElementById("progressBar").style.width = "0%";
+
+      let loaded = 0;
+      setTimeout(() => {
+        document.getElementById("badgeStatus").className = "text-xs font-bold px-3 py-1 rounded-full uppercase bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]";
+        document.getElementById("badgeStatus").textContent = "LOADING";
+
+        const interval = setInterval(() => {
+          loaded += Math.ceil(total / 8);
+          if (loaded >= total) {
+            loaded = total;
+            clearInterval(interval);
+            document.getElementById("badgeStatus").className = "text-xs font-bold px-3 py-1 rounded-full uppercase bg-[#ECFDF5] text-[#059669] border border-[#A7F3D0]";
+            document.getElementById("badgeStatus").textContent = "COMPLETE";
+            btn.disabled = false;
+
+            // Commit data to state
+            graphRows = [...parsedData];
+            graphLoaded = true;
+
+            // Update Chat Header Badge
+            document.getElementById("lblActiveDataName").textContent = activeFilename;
+            document.getElementById("lblActiveDataRows").textContent = total;
+            document.getElementById("activeDatasetTag").className = "text-xs bg-[#F0EEFF] text-[#6842ED] border border-[#DDD6FE] px-3.5 py-1.5 rounded-full font-medium shadow-sm";
+            document.getElementById("chatReadyBadge").classList.remove("hidden");
+            document.getElementById("btnGoToChatContainer").classList.remove("hidden");
+
+            // Render dynamic suggestion chips based on real uploaded data
+            renderDynamicChips();
+
+            appendBotMsg({
+              answer: `Dataset '${activeFilename}' (${total} rows) successfully ingested into the Neo4j graph. You can now ask questions about this data.`,
+              grounded: true,
+              cypher: `MATCH (d:Dataset)-[:HAS_ROW]->(r:Row) RETURN count(r) AS total_persisted`,
+              result: [{ total_persisted: total }]
+            });
+          }
+          const pct = Math.round((loaded / total) * 100);
+          document.getElementById("progressBar").style.width = `${pct}%`;
+          document.getElementById("valLoaded").textContent = loaded;
+        }, 220);
+      }, 350);
+    }
+
+    function renderDynamicChips() {
+      const container = document.getElementById("dynamicChipsContainer");
+      if (!container || !currentHeaders.length) return;
+      container.innerHTML = "";
+      container.classList.remove("hidden");
+
+      const chips = [];
+      chips.push({ label: "Total Rows", query: "how many rows" });
+
+      // Identify ID column and descriptive column
+      const idCol = currentHeaders.find(h => /(employee_id|row_id|id|sku|code)/i.test(h));
+      const targetCol = currentHeaders.find(h => /(department|category|role|city|status|name|title)/i.test(h)) || currentHeaders[1];
+
+      if (idCol && graphRows.length > 0 && targetCol) {
+        const sampleVal = graphRows[0][idCol];
+        chips.push({ label: `${targetCol} of ${sampleVal}`, query: `give me the ${targetCol} of ${sampleVal}` });
+      }
+
+      // Categorical column
+      const catCol = currentHeaders.find(h => /(department|category|role|city|status|type)/i.test(h));
+      if (catCol) {
+        chips.push({ label: `All ${catCol}s`, query: `list all ${catCol}s` });
+      }
+
+      // Numeric column
+      const numCol = currentHeaders.find(h => graphRows.length > 0 && typeof graphRows[0][h] === "number");
+      if (numCol) {
+        chips.push({ label: `Average ${numCol}`, query: `what is the average ${numCol}?` });
+      }
+
+      chips.push({ label: "Ungrounded Test", query: "What is the capital of France?", ungrounded: true });
+
+      chips.forEach(c => {
+        const btn = document.createElement("button");
+        btn.className = c.ungrounded
+          ? "text-xs bg-[#FFF1F2] hover:bg-[#FFE4E6] text-[#BE123C] border border-[#FECDD3] px-3.5 py-1.5 rounded-full transition shadow-sm font-medium"
+          : "text-xs bg-white hover:bg-[#F5F3FF] text-[#334155] hover:text-[#6842ED] border border-[#E2E8F0] hover:border-[#C4B5FD] px-3.5 py-1.5 rounded-full transition shadow-sm font-medium";
+        btn.textContent = c.label;
+        btn.onclick = () => askQuestion(c.query);
+        container.appendChild(btn);
+      });
+    }
+
+    function askQuestion(q) {
+      document.getElementById("chatInput").value = q;
+      sendChat();
+    }
+
+    function sendChat() {
+      const input = document.getElementById("chatInput");
+      const q = input.value.trim();
+      if (!q) return;
+
+      appendUserMsg(q);
+      input.value = "";
+
+      setTimeout(() => {
+        const resp = executeCypherQueryEngine(q);
+        appendBotMsg(resp);
+      }, 180);
+    }
+
+    // Dynamic Graph Query Engine
+    function executeCypherQueryEngine(q) {
+      const q_clean = q.trim();
+      const q_lower = q_clean.toLowerCase();
+
+      if (!graphLoaded || graphRows.length === 0) {
+        return {
+          answer: "No data is currently loaded in the graph database. Please upload a CSV dataset first and wait for ingestion to complete.",
+          cypher: "MATCH (r:Row) RETURN count(r) AS total_rows",
+          result: [{ total_rows: 0 }],
+          grounded: false
+        };
+      }
+
+      const total = graphRows.length;
+      const headers = currentHeaders;
+
+      function findMatchingHeader(word) {
+        if (!word) return null;
+        const w = word.toLowerCase().replace(/[^a-z0-9_]/g, "");
+        if (!w) return null;
+
+        // 1. Exact or singular/plural match
+        for (const h of headers) {
+          const h_clean = h.toLowerCase().replace(/[^a-z0-9_]/g, "");
+          if (h_clean === w || h_clean === w.replace(/s$/, "") || w === h_clean.replace(/s$/, "")) {
+            return h;
+          }
+        }
+
+        // 2. Prefix / Suffix match (e.g. "name" -> "employee_name", "id" -> "employee_id")
+        for (const h of headers) {
+          const h_clean = h.toLowerCase().replace(/[^a-z0-9_]/g, "");
+          if (h_clean.endsWith("_" + w) || h_clean.startsWith(w + "_")) {
+            return h;
+          }
+        }
+
+        // 3. Substring match
+        for (const h of headers) {
+          const h_clean = h.toLowerCase().replace(/[^a-z0-9_]/g, "");
+          if (h_clean.includes(w) || w.includes(h_clean)) {
+            return h;
+          }
+        }
+        return null;
+      }
+
+      function findMatchingRow(term) {
+        if (!term) return null;
+        const t = term.toString().trim().toLowerCase();
+        
+        // 1. Exact match across all columns
+        for (const r of graphRows) {
+          for (const h of headers) {
+            const val = (r[h] !== null && r[h] !== undefined) ? r[h].toString().trim().toLowerCase() : "";
+            if (val === t) {
+              return { row: r, matchedCol: h, matchedVal: r[h] };
+            }
+          }
+        }
+        
+        // 2. Substring match across all columns
+        for (const r of graphRows) {
+          for (const h of headers) {
+            const val = (r[h] !== null && r[h] !== undefined) ? r[h].toString().trim().toLowerCase() : "";
+            if (val.length > 0 && (val.includes(t) || t.includes(val))) {
+              return { row: r, matchedCol: h, matchedVal: r[h] };
+            }
+          }
+        }
+
+        // 3. Digit normalization (e.g. "employee 4" -> 4 matching row_id 4 or EMP004)
+        const digits = t.replace(/\D/g, "");
+        if (digits) {
+          const num = Number(digits);
+          for (const r of graphRows) {
+            for (const h of headers) {
+              const val = r[h];
+              if (val === num || val === digits) {
+                return { row: r, matchedCol: h, matchedVal: r[h] };
+              }
+              if (typeof val === "string" && val.toLowerCase().endsWith(digits.padStart(val.length - (val.search(/\d/) >= 0 ? val.search(/\d/) : 0), "0"))) {
+                return { row: r, matchedCol: h, matchedVal: r[h] };
+              }
+            }
+          }
+        }
+
+        return null;
+      }
+
+      // PATTERN 1: "give me the <property/properties> of <entity/id>" / "what is the <properties> for <entity/id>"
+      const propOfMatch = q_lower.match(/(?:give me|what is|get|find|show|tell me)?\s*(?:the\s+)?(.+?)\s+(?:of|for)\s+(.+?)(?:\?|$)/i);
+      if (propOfMatch) {
+        const rawProps = propOfMatch[1].trim();
+        const searchEntity = propOfMatch[2].replace(/[?!.]/g, "").trim();
+
+        let targetProps = [];
+        const isAllDetails = /\b(all|details|detail|info|information|everything|profile)\b/i.test(rawProps);
+
+        if (isAllDetails) {
+          targetProps = [...headers];
+        } else {
+          const rawParts = rawProps.split(/,|&|\band\b/);
+          for (let part of rawParts) {
+            part = part.trim().replace(/^(the|a|an)\s+/i, "").replace(/\s+(the|a|an)$/i, "").trim();
+            if (!part) continue;
+            const matchedH = findMatchingHeader(part);
+            if (matchedH && !targetProps.includes(matchedH)) {
+              targetProps.push(matchedH);
+            }
+          }
+        }
+
+        if (targetProps.length > 0) {
+          const matchResult = findMatchingRow(searchEntity);
+          if (matchResult) {
+            const row = matchResult.row;
+            const nameVal = row.employee_name || row.Name || row.name;
+            const idVal = row.employee_id || row.row_id || row.id;
+            let entityLabel = "";
+            if (nameVal && idVal && nameVal !== idVal) {
+              entityLabel = `${nameVal} (${idVal})`;
+            } else {
+              entityLabel = nameVal || idVal || `record`;
+            }
+
+            let answer = "";
+            if (targetProps.length === 1) {
+              const h = targetProps[0];
+              answer = `For ${entityLabel}, the ${h} is '${row[h]}'.`;
+            } else {
+              const details = targetProps.map(h => `${h} is '${row[h]}'`).join(", ");
+              answer = `For ${entityLabel}: ${details}.`;
+            }
+
+            const cypherWhere = typeof matchResult.matchedVal === "number"
+              ? `r.${matchResult.matchedCol} = ${matchResult.matchedVal}`
+              : `toLower(toString(r.${matchResult.matchedCol})) = '${matchResult.matchedVal.toString().toLowerCase()}'`;
+
+            const returnClause = targetProps.map(h => `r.${h} AS ${h}`).join(", ");
+            const cypher = `MATCH (r:Row) WHERE ${cypherWhere} RETURN ${returnClause}`;
+            const rec = {};
+            targetProps.forEach(h => { rec[h] = row[h]; });
+
+            return {
+              answer: answer,
+              cypher: cypher,
+              result: [rec],
+              grounded: true
+            };
+          }
+        }
+      }
+
+      // PATTERN 2: "<entity> <property>"
+      for (const h of headers) {
+        const h_low = h.toLowerCase();
+        if (q_lower.includes(h_low)) {
+          const remainder = q_lower.replace(h_low, "").replace(/['?]/g, "").trim();
+          if (remainder.length > 0) {
+            const matchResult = findMatchingRow(remainder);
+            if (matchResult) {
+              const row = matchResult.row;
+              const targetVal = row[h];
+              const entityLabel = row.employee_name || row.Name || row.employee_id || row.Product || `record`;
+              const cypher = `MATCH (r:Row) WHERE toLower(toString(r.${matchResult.matchedCol})) CONTAINS '${matchResult.matchedVal.toString().toLowerCase()}' RETURN r.${h} AS ${h}`;
+              return {
+                answer: `For ${entityLabel}, the ${h} is '${targetVal}'.`,
+                cypher: cypher,
+                result: [{ [h]: targetVal }],
+                grounded: true
+              };
+            }
+          }
+        }
+      }
+
+      // PATTERN 3: Direct entity lookup
+      const entityMatch = q_lower.match(/(?:tell me about|who is|details for|show|lookup|record for)\s+(.+?)(?:\?|$)/i);
+      if (entityMatch) {
+        const term = entityMatch[1].trim();
+        const matchResult = findMatchingRow(term);
+        if (matchResult) {
+          const row = matchResult.row;
+          const displayProps = Object.entries(row).map(([k, v]) => `${k}: ${v}`).join(", ");
+          const cypher = `MATCH (r:Row) WHERE toLower(toString(r.${matchResult.matchedCol})) = '${matchResult.matchedVal.toString().toLowerCase()}' RETURN r LIMIT 1`;
+          return {
+            answer: `Found record: ${displayProps}.`,
+            cypher: cypher,
+            result: [row],
+            grounded: true
+          };
+        }
+      }
+
+      // PATTERN 4: Entity / Column / Total counts
+      const countEntityMatch = q_lower.match(/^(?:how many|number of|count of|total count of|total)\s+([a-z0-9_\-\s]+?)(?:\s+are there|\s+in total|\s+exist|\s+in graph|\s+in dataset)?\??$/i);
+      if (countEntityMatch) {
+        const nounPhrase = countEntityMatch[1].trim();
+        const nounWord = nounPhrase.split(/\s+/)[0];
+        const singularNoun = nounWord.replace(/s$/, "");
+
+        const isEntityCount = ["employee", "product", "row", "record", "entry", "item", "person", "people", "user", "data", "point", "all"].includes(singularNoun)
+          || (activeFilename && activeFilename.toLowerCase().includes(singularNoun))
+          || headers.some(h => h.toLowerCase().includes(singularNoun));
+
+        if (isEntityCount) {
+          return {
+            answer: `There are ${total} ${nounPhrase} in the knowledge graph.`,
+            cypher: `MATCH (r:Row) RETURN count(r) AS total_${nounWord}`,
+            result: [{ [`total_${nounWord}`]: total }],
+            grounded: true
+          };
+        }
+
+        const matchedColHeader = headers.find(h => h.toLowerCase() === nounWord || h.toLowerCase() === singularNoun);
+        if (matchedColHeader) {
+          const distinctVals = [...new Set(graphRows.map(r => r[matchedColHeader]))].filter(v => v !== null && v !== undefined && v !== "").sort();
+          return {
+            answer: `There are ${distinctVals.length} distinct ${matchedColHeader}s: ${distinctVals.join(", ")}.`,
+            cypher: `MATCH (r:Row) WHERE r.${matchedColHeader} IS NOT NULL RETURN count(DISTINCT r.${matchedColHeader}) AS distinct_${matchedColHeader}`,
+            result: [{ [`distinct_${matchedColHeader}`]: distinctVals.length }],
+            grounded: true
+          };
+        }
+      }
+
+      if (q_lower.includes("how many total") || q_lower.includes("total rows") || q_lower.includes("how many rows") || q_lower.includes("count rows") || q_lower.includes("how many records")) {
+        return {
+          answer: `There are ${total} total data rows in the knowledge graph.`,
+          cypher: `MATCH (r:Row) RETURN count(r) AS total_rows`,
+          result: [{ total_rows: total }],
+          grounded: true
+        };
+      }
+
+      // PATTERN 5: Filtered counts
+      for (const r of graphRows) {
+        for (const h of headers) {
+          const cellVal = (r[h] !== null && r[h] !== undefined) ? r[h].toString().trim() : "";
+          if (cellVal.length > 1 && q_lower.includes(cellVal.toLowerCase())) {
+            const matches = graphRows.filter(rowItem => (rowItem[h] || "").toString().toLowerCase() === cellVal.toLowerCase());
+            return {
+              answer: `There are ${matches.length} record(s) where ${h} is '${cellVal}'.`,
+              cypher: `MATCH (r:Row) WHERE toLower(toString(r.${h})) = '${cellVal.toLowerCase()}' RETURN count(r) AS count`,
+              result: [{ count: matches.length }],
+              grounded: true
+            };
+          }
+        }
+      }
+
+      // PATTERN 6: Aggregations (Average, Max, Min, Sum)
+      const isAvg = /\b(average|avg|mean)\b/i.test(q_lower);
+      const isMax = /\b(highest|maximum|max)\b/i.test(q_lower);
+      const isMin = /\b(lowest|minimum|min)\b/i.test(q_lower);
+      const isSum = /\b(total|sum)\b/i.test(q_lower);
+
+      if (isAvg || isMax || isMin || isSum) {
+        for (const h of headers) {
+          if (q_lower.includes(h.toLowerCase())) {
+            const numericVals = graphRows.map(r => Number(r[h])).filter(v => !isNaN(v) && v !== null && v !== undefined);
+            if (numericVals.length > 0) {
+              if (isAvg) {
+                const avg = numericVals.reduce((a, b) => a + b, 0) / numericVals.length;
+                return {
+                  answer: `The average ${h} is ${avg.toFixed(2)}.`,
+                  cypher: `MATCH (r:Row) WHERE r.${h} IS NOT NULL RETURN round(avg(toInteger(r.${h})), 2) AS avg_${h}`,
+                  result: [{ [`avg_${h}`]: Number(avg.toFixed(2)) }],
+                  grounded: true
+                };
+              }
+              if (isMax) {
+                const max = Math.max(...numericVals);
+                return {
+                  answer: `The highest ${h} is ${max}.`,
+                  cypher: `MATCH (r:Row) WHERE r.${h} IS NOT NULL RETURN max(toInteger(r.${h})) AS max_${h}`,
+                  result: [{ [`max_${h}`]: max }],
+                  grounded: true
+                };
+              }
+              if (isMin) {
+                const min = Math.min(...numericVals);
+                return {
+                  answer: `The lowest ${h} is ${min}.`,
+                  cypher: `MATCH (r:Row) WHERE r.${h} IS NOT NULL RETURN min(toInteger(r.${h})) AS min_${h}`,
+                  result: [{ [`min_${h}`]: min }],
+                  grounded: true
+                };
+              }
+              if (isSum) {
+                const sum = numericVals.reduce((a, b) => a + b, 0);
+                return {
+                  answer: `The total sum of ${h} is ${sum}.`,
+                  cypher: `MATCH (r:Row) WHERE r.${h} IS NOT NULL RETURN sum(toInteger(r.${h})) AS sum_${h}`,
+                  result: [{ [`sum_${h}`]: sum }],
+                  grounded: true
+                };
+              }
+            }
+          }
+        }
+      }
+
+      // PATTERN 7: Distinct listing
+      if (q_lower.includes("list") || q_lower.includes("show all") || q_lower.includes("unique") || q_lower.includes("distinct") || q_lower.includes("what are the")) {
+        for (const h of headers) {
+          const singular = h.toLowerCase().replace(/s$/, "");
+          if (q_lower.includes(h.toLowerCase()) || q_lower.includes(singular)) {
+            const distinctVals = [...new Set(graphRows.map(r => r[h]))].filter(v => v !== null && v !== undefined && v !== "").sort();
+            return {
+              answer: `Here are the distinct ${h} values in the dataset: ${distinctVals.join(", ")}.`,
+              cypher: `MATCH (r:Row) WHERE r.${h} IS NOT NULL RETURN DISTINCT r.${h} AS ${h} ORDER BY ${h}`,
+              result: distinctVals.map(v => ({ [h]: v })),
+              grounded: true
+            };
+          }
+        }
+      }
+
+      // PATTERN 8: Direct word search fallback
+      const words = q_lower.split(/\s+/).map(w => w.replace(/[^a-z0-9]/g, "")).filter(w => w.length > 2);
+      for (const w of words) {
+        const matchResult = findMatchingRow(w);
+        if (matchResult) {
+          const row = matchResult.row;
+          const cypher = `MATCH (r:Row) WHERE toLower(toString(r.${matchResult.matchedCol})) CONTAINS '${w}' RETURN r LIMIT 1`;
+          return {
+            answer: `Found record matching '${w}' in column '${matchResult.matchedCol}': ${JSON.stringify(row)}.`,
+            cypher: cypher,
+            result: [row],
+            grounded: true
+          };
+        }
+      }
+
+      return {
+        answer: "I do not have data in the knowledge graph to answer this question. The question does not match any properties, entities, or records in the uploaded dataset.",
+        cypher: "NONE",
+        result: [],
+        grounded: false
+      };
+    }
+
+    function appendUserMsg(text) {
+      const history = document.getElementById("chatHistory");
+      const div = document.createElement("div");
+      div.className = "flex justify-end";
+      div.innerHTML = `<div class="bg-gradient-to-r from-[#7C5CFC] to-[#6842ED] text-white text-xs px-4 py-2.5 rounded-2xl rounded-tr-sm max-w-[85%] shadow-[0_4px_16px_rgba(124,92,252,0.3)]">${escapeHtml(text)}</div>`;
+      history.appendChild(div);
+      history.scrollTop = history.scrollHeight;
+    }
+
+    function appendBotMsg(resp) {
+      const history = document.getElementById("chatHistory");
+      const div = document.createElement("div");
+      div.className = "flex justify-start";
+
+      const badge = resp.grounded
+        ? `<span class="inline-flex items-center gap-1 bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">✓ GROUNDED (FROM GRAPH)</span>`
+        : `<span class="inline-flex items-center gap-1 bg-[#FFF1F2] text-[#BE123C] border border-[#FECDD3] text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">✗ NOT GROUNDED (UNSUPPORTED/NO DATA)</span>`;
+
+      div.innerHTML = `
+        <div class="bg-white border border-[#E8E8F2] rounded-2xl rounded-tl-sm p-4 text-xs text-[#1E1B4B] max-w-[92%] shadow-[0_4px_20px_rgba(0,0,0,0.03)] space-y-2">
+          <div>${badge}</div>
+          <p class="leading-relaxed whitespace-pre-line text-[#1E1B4B]">${escapeHtml(resp.answer)}</p>
+        </div>
+      `;
+
+      history.appendChild(div);
+      history.scrollTop = history.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+      if (typeof str !== "string") str = String(str);
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    // Auto-launch splash curtain transition
+    window.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        const splash = document.getElementById("splashScreen");
+        if (splash) {
+          splash.classList.add("curtain-up");
+          setTimeout(() => {
+            splash.style.display = "none";
+          }, 950);
+        }
+      }, 2000);
+    });
+
+    function triggerSplash() {
+      const splash = document.getElementById("splashScreen");
+      if (!splash) return;
+      splash.style.display = "flex";
+      splash.classList.remove("curtain-up");
+      const clone = splash.cloneNode(true);
+      splash.parentNode.replaceChild(clone, splash);
+      setTimeout(() => {
+        clone.classList.add("curtain-up");
+        setTimeout(() => {
+          clone.style.display = "none";
+        }, 950);
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
