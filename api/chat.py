@@ -187,9 +187,9 @@ class GroundedChatEngine:
                                 "grounded": True,
                             }
 
-        # Rule 1: Entity or total count (e.g. "how many employees", "how many products", "how many total rows")
-        count_match = re.search(r"\b(how many|count of|total count of|number of)\s+(?:total\s+)?([a-zA-Z0-9_\-]+)\b", q_lower)
-        if count_match or re.search(r"\b(total rows|row count|count rows|how many rows|how many records)\b", q_lower):
+        # Rule 1: Entity or total count (e.g. "count employees", "count employee", "how many employees", "total employees", "how many products", "how many total rows")
+        count_match = re.search(r"\b(how many|count of|total count of|total count|number of|count|total)\s+(?:total\s+)?([a-zA-Z0-9_\-]+)\b", q_lower)
+        if count_match or re.search(r"\b(total rows|row count|count rows|how many rows|how many records|count all)\b", q_lower):
             noun = count_match.group(2).lower() if count_match else "rows"
             singular = noun.rstrip("s")
 
@@ -216,11 +216,19 @@ class GroundedChatEngine:
                         any(singular in p.lower() for p in properties) or \
                         noun in ("rows", "records", "items", "entries", "total")
 
-            if is_entity or "how many" in q_lower:
+            if is_entity or "how many" in q_lower or q_lower.startswith("count"):
                 cypher = "MATCH (r:Row) RETURN count(r) AS total_rows"
                 res = self.execute_cypher(cypher)
                 count_val = res[0]["total_rows"] if res else 0
-                display_noun = "rows" if noun == "total" else noun
+                if noun in ("total", "all"):
+                    display_noun = "rows"
+                elif singular in ("employee", "worker", "user", "product", "item", "row", "record", "entry"):
+                    display_noun = singular + "s"
+                elif singular == "person":
+                    display_noun = "people"
+                else:
+                    display_noun = noun if noun.endswith("s") else noun + "s"
+
                 return {
                     "answer": f"There are {count_val} {display_noun} in the knowledge graph.",
                     "cypher": f"MATCH (r:Row) RETURN count(r) AS total_{display_noun}",
