@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DATA BRAIN</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="shortcut icon" type="image/png" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
     :root {
@@ -158,18 +161,30 @@
       </div>
     </div>
 
-    <!-- Navigation Tabs -->
-    <nav class="flex items-center gap-1.5 bg-[#ECECF5]/70 p-1.5 rounded-2xl border border-[#E2E4F0]">
-      <button id="tabBtnUpload" onclick="switchSection('upload')" class="px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-gradient-to-r from-[#7C5CFC] to-[#6842ED] text-white shadow-[0_4px_14px_rgba(124,92,252,0.35)]">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-        <span>Upload CSV</span>
-      </button>
-      <button id="tabBtnChat" onclick="switchSection('chat')" class="px-4 py-2 rounded-xl text-xs font-semibold text-[#64748B] hover:text-[#1E1B4B] transition flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-        <span>Chatbot</span>
-        <span id="chatReadyBadge" class="hidden w-2 h-2 rounded-full bg-[#7C5CFC]"></span>
-      </button>
-    </nav>
+    <!-- Live Stack Status Badge -->
+    <div class="flex items-center gap-3">
+      <div id="liveStackBadge" class="hidden md:flex items-center gap-2 bg-[#ECFDF5] border border-[#A7F3D0] px-3.5 py-1.5 rounded-xl text-[11px] font-semibold text-[#047857] shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+        <span>Live Docker Stack (Kafka & Neo4j Active)</span>
+      </div>
+      <div id="standaloneBadge" class="hidden md:flex items-center gap-2 bg-[#F8FAFC] border border-[#E2E8F0] px-3.5 py-1.5 rounded-xl text-[11px] font-semibold text-[#64748B] shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-[#94A3B8]"></span>
+        <span>Interactive Standalone Demo</span>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1.5 bg-[#ECECF5]/70 p-1.5 rounded-2xl border border-[#E2E4F0]">
+        <button id="tabBtnUpload" onclick="switchSection('upload')" class="px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2 bg-gradient-to-r from-[#7C5CFC] to-[#6842ED] text-white shadow-[0_4px_14px_rgba(124,92,252,0.35)]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+          <span>Upload CSV</span>
+        </button>
+        <button id="tabBtnChat" onclick="switchSection('chat')" class="px-4 py-2 rounded-xl text-xs font-semibold text-[#64748B] hover:text-[#1E1B4B] transition flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+          <span>Chatbot</span>
+          <span id="chatReadyBadge" class="hidden w-2 h-2 rounded-full bg-[#7C5CFC]"></span>
+        </button>
+      </nav>
+    </div>
   </header>
 
   <!-- Main Content Container -->
@@ -272,9 +287,6 @@
             Active Dataset: <span id="lblActiveDataName" class="font-semibold">None</span> (<span id="lblActiveDataRows" class="font-semibold">0</span> rows)
           </div>
         </div>
-
-        <!-- Dynamic Question Suggestions (Generated after CSV ingestion) -->
-        <div id="dynamicChipsContainer" class="hidden flex flex-wrap gap-1.5 mb-3"></div>
 
         <!-- Scrollable Messages History -->
         <div id="chatHistory" class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scroll">
@@ -417,9 +429,7 @@
             document.getElementById("chatReadyBadge").classList.remove("hidden");
             document.getElementById("btnGoToChatContainer").classList.remove("hidden");
 
-            // Render dynamic suggestion chips based on real uploaded data
-            renderDynamicChips();
-
+            // Ingestion complete
             appendBotMsg({
               answer: `Dataset '${activeFilename}' (${total} rows) successfully ingested into the Neo4j graph. You can now ask questions about this data.`,
               grounded: true,
@@ -432,49 +442,6 @@
           document.getElementById("valLoaded").textContent = loaded;
         }, 220);
       }, 350);
-    }
-
-    function renderDynamicChips() {
-      const container = document.getElementById("dynamicChipsContainer");
-      if (!container || !currentHeaders.length) return;
-      container.innerHTML = "";
-      container.classList.remove("hidden");
-
-      const chips = [];
-      chips.push({ label: "Total Rows", query: "how many rows" });
-
-      // Identify ID column and descriptive column
-      const idCol = currentHeaders.find(h => /(employee_id|row_id|id|sku|code)/i.test(h));
-      const targetCol = currentHeaders.find(h => /(department|category|role|city|status|name|title)/i.test(h)) || currentHeaders[1];
-
-      if (idCol && graphRows.length > 0 && targetCol) {
-        const sampleVal = graphRows[0][idCol];
-        chips.push({ label: `${targetCol} of ${sampleVal}`, query: `give me the ${targetCol} of ${sampleVal}` });
-      }
-
-      // Categorical column
-      const catCol = currentHeaders.find(h => /(department|category|role|city|status|type)/i.test(h));
-      if (catCol) {
-        chips.push({ label: `All ${catCol}s`, query: `list all ${catCol}s` });
-      }
-
-      // Numeric column
-      const numCol = currentHeaders.find(h => graphRows.length > 0 && typeof graphRows[0][h] === "number");
-      if (numCol) {
-        chips.push({ label: `Average ${numCol}`, query: `what is the average ${numCol}?` });
-      }
-
-      chips.push({ label: "Ungrounded Test", query: "What is the capital of France?", ungrounded: true });
-
-      chips.forEach(c => {
-        const btn = document.createElement("button");
-        btn.className = c.ungrounded
-          ? "text-xs bg-[#FFF1F2] hover:bg-[#FFE4E6] text-[#BE123C] border border-[#FECDD3] px-3.5 py-1.5 rounded-full transition shadow-sm font-medium"
-          : "text-xs bg-white hover:bg-[#F5F3FF] text-[#334155] hover:text-[#6842ED] border border-[#E2E8F0] hover:border-[#C4B5FD] px-3.5 py-1.5 rounded-full transition shadow-sm font-medium";
-        btn.textContent = c.label;
-        btn.onclick = () => askQuestion(c.query);
-        container.appendChild(btn);
-      });
     }
 
     function askQuestion(q) {
@@ -547,7 +514,17 @@
       function findMatchingRow(term) {
         if (!term) return null;
         const t = term.toString().trim().toLowerCase();
-        
+        if (!t) return null;
+
+        // Generic category/entity words should NEVER be matched as an individual row
+        const genericWords = new Set([
+          "employee", "employees", "product", "products", "item", "items", "row", "rows",
+          "record", "records", "user", "users", "person", "people", "data", "count", "all", "total"
+        ]);
+        if (genericWords.has(t)) {
+          return null;
+        }
+
         // 1. Exact match across all columns
         for (const r of graphRows) {
           for (const h of headers) {
@@ -557,18 +534,8 @@
             }
           }
         }
-        
-        // 2. Substring match across all columns
-        for (const r of graphRows) {
-          for (const h of headers) {
-            const val = (r[h] !== null && r[h] !== undefined) ? r[h].toString().trim().toLowerCase() : "";
-            if (val.length > 0 && (val.includes(t) || t.includes(val))) {
-              return { row: r, matchedCol: h, matchedVal: r[h] };
-            }
-          }
-        }
 
-        // 3. Digit normalization (e.g. "employee 4" -> 4 matching row_id 4 or EMP004)
+        // 2. Digit normalization (e.g. "employee 4" -> 4 matching row_id 4 or EMP004)
         const digits = t.replace(/\D/g, "");
         if (digits) {
           const num = Number(digits);
@@ -585,7 +552,101 @@
           }
         }
 
+        // 3. Substring match across all columns (only for specific terms longer than 2 characters and not generic words)
+        if (t.length > 2) {
+          for (const r of graphRows) {
+            for (const h of headers) {
+              const val = (r[h] !== null && r[h] !== undefined) ? r[h].toString().trim().toLowerCase() : "";
+              if (val.length > 0 && (val.includes(t) || t.includes(val))) {
+                return { row: r, matchedCol: h, matchedVal: r[h] };
+              }
+            }
+          }
+        }
+
         return null;
+      }
+
+      // =========================================================================
+      // PATTERN 0: COMPREHENSIVE COUNT / HOW MANY / TOTAL HANDLER
+      // Unifies: "count employees", "count employee", "count of employee", "count of employees",
+      // "how many employees", "how many employee", "number of employees", "total employees",
+      // "count rows", "how many rows", "total count", "count all", etc.
+      // =========================================================================
+      const isCountIntent = /^(?:count(?:\s+of)?|how\s+many|number\s+of|total(?:\s+count)?(?:\s+of)?)\b/i.test(q_lower)
+        || /\b(?:total\s+(?:rows|records|employees|products|items|data|count)|row\s+count|employee\s+count|count\s+all)\b/i.test(q_lower)
+        || /^(?:count|how\s+many)\b/i.test(q_lower);
+
+      if (isCountIntent) {
+        // 1. Check for Filtered count (e.g. "how many in sales", "count of managers", "count employees in pune")
+        for (const r of graphRows) {
+          for (const h of headers) {
+            const cellVal = (r[h] !== null && r[h] !== undefined) ? r[h].toString().trim() : "";
+            if (cellVal.length > 1) {
+              const cellValLower = cellVal.toLowerCase();
+              if (cellValLower !== "employee" && cellValLower !== "product" && cellValLower !== "row" && !/^\d+$/.test(cellValLower)) {
+                const regexVal = new RegExp(`\\b${cellValLower.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, "i");
+                if (regexVal.test(q_lower)) {
+                  const matches = graphRows.filter(rowItem => (rowItem[h] || "").toString().toLowerCase() === cellValLower);
+                  return {
+                    answer: `There are ${matches.length} record(s) where ${h} is '${cellVal}'.`,
+                    cypher: `MATCH (r:Row) WHERE toLower(toString(r.${h})) = '${cellValLower}' RETURN count(r) AS count`,
+                    result: [{ count: matches.length }],
+                    grounded: true
+                  };
+                }
+              }
+            }
+          }
+        }
+
+        // 2. Extract subject being counted
+        const cleanedSubject = q_lower
+          .replace(/^(?:count\s+of|count|how\s+many|number\s+of|total\s+count\s+of|total\s+count|total)\s+/i, "")
+          .replace(/\s+(?:are\s+there|in\s+total|exist|in\s+(?:the\s+)?(?:knowledge\s+graph|graph|dataset|system|table)|in\s+dataset)\b.*$/i, "")
+          .replace(/[?!.]/g, "")
+          .trim();
+
+        // 3. Check if counting distinct column categories (e.g. "count departments", "how many roles", "count cities")
+        const matchedH = findMatchingHeader(cleanedSubject);
+        if (matchedH && !["name", "employee_id", "row_id", "id"].includes(matchedH.toLowerCase())) {
+          const distinctVals = [...new Set(graphRows.map(r => r[matchedH]))].filter(v => v !== null && v !== undefined && v !== "").sort();
+          return {
+            answer: `There are ${distinctVals.length} distinct ${matchedH}s: ${distinctVals.join(", ")}.`,
+            cypher: `MATCH (r:Row) WHERE r.${matchedH} IS NOT NULL RETURN count(DISTINCT r.${matchedH}) AS distinct_${matchedH}`,
+            result: [{ [`distinct_${matchedH}`]: distinctVals.length }],
+            grounded: true
+          };
+        }
+
+        // 4. Total count of entities / rows (normalized for consistent output across all phrasings)
+        let displayNoun = "employees";
+        let entityKey = "employees";
+
+        if (q_lower.includes("row") || cleanedSubject.startsWith("row")) {
+          displayNoun = "rows";
+          entityKey = "rows";
+        } else if (q_lower.includes("record") || cleanedSubject.startsWith("record")) {
+          displayNoun = "records";
+          entityKey = "records";
+        } else if (q_lower.includes("product") || cleanedSubject.startsWith("product")) {
+          displayNoun = "products";
+          entityKey = "products";
+        } else if (q_lower.includes("employee") || cleanedSubject.startsWith("employee")) {
+          displayNoun = "employees";
+          entityKey = "employees";
+        } else if (cleanedSubject && cleanedSubject !== "all" && cleanedSubject !== "total") {
+          const singular = cleanedSubject.split(/\s+/)[0].replace(/s$/, "");
+          displayNoun = singular + "s";
+          entityKey = displayNoun;
+        }
+
+        return {
+          answer: `There are ${total} ${displayNoun} in the knowledge graph.`,
+          cypher: `MATCH (r:Row) RETURN count(r) AS total_${entityKey}`,
+          result: [{ [`total_${entityKey}`]: total }],
+          grounded: true
+        };
       }
 
       // PATTERN 1: "give me the <property/properties> of <entity/id>" / "what is the <properties> for <entity/id>"
@@ -693,64 +754,7 @@
         }
       }
 
-      // PATTERN 4: Entity / Column / Total counts
-      const countEntityMatch = q_lower.match(/^(?:how many|number of|count of|total count of|total)\s+([a-z0-9_\-\s]+?)(?:\s+are there|\s+in total|\s+exist|\s+in graph|\s+in dataset)?\??$/i);
-      if (countEntityMatch) {
-        const nounPhrase = countEntityMatch[1].trim();
-        const nounWord = nounPhrase.split(/\s+/)[0];
-        const singularNoun = nounWord.replace(/s$/, "");
-
-        const isEntityCount = ["employee", "product", "row", "record", "entry", "item", "person", "people", "user", "data", "point", "all"].includes(singularNoun)
-          || (activeFilename && activeFilename.toLowerCase().includes(singularNoun))
-          || headers.some(h => h.toLowerCase().includes(singularNoun));
-
-        if (isEntityCount) {
-          return {
-            answer: `There are ${total} ${nounPhrase} in the knowledge graph.`,
-            cypher: `MATCH (r:Row) RETURN count(r) AS total_${nounWord}`,
-            result: [{ [`total_${nounWord}`]: total }],
-            grounded: true
-          };
-        }
-
-        const matchedColHeader = headers.find(h => h.toLowerCase() === nounWord || h.toLowerCase() === singularNoun);
-        if (matchedColHeader) {
-          const distinctVals = [...new Set(graphRows.map(r => r[matchedColHeader]))].filter(v => v !== null && v !== undefined && v !== "").sort();
-          return {
-            answer: `There are ${distinctVals.length} distinct ${matchedColHeader}s: ${distinctVals.join(", ")}.`,
-            cypher: `MATCH (r:Row) WHERE r.${matchedColHeader} IS NOT NULL RETURN count(DISTINCT r.${matchedColHeader}) AS distinct_${matchedColHeader}`,
-            result: [{ [`distinct_${matchedColHeader}`]: distinctVals.length }],
-            grounded: true
-          };
-        }
-      }
-
-      if (q_lower.includes("how many total") || q_lower.includes("total rows") || q_lower.includes("how many rows") || q_lower.includes("count rows") || q_lower.includes("how many records")) {
-        return {
-          answer: `There are ${total} total data rows in the knowledge graph.`,
-          cypher: `MATCH (r:Row) RETURN count(r) AS total_rows`,
-          result: [{ total_rows: total }],
-          grounded: true
-        };
-      }
-
-      // PATTERN 5: Filtered counts
-      for (const r of graphRows) {
-        for (const h of headers) {
-          const cellVal = (r[h] !== null && r[h] !== undefined) ? r[h].toString().trim() : "";
-          if (cellVal.length > 1 && q_lower.includes(cellVal.toLowerCase())) {
-            const matches = graphRows.filter(rowItem => (rowItem[h] || "").toString().toLowerCase() === cellVal.toLowerCase());
-            return {
-              answer: `There are ${matches.length} record(s) where ${h} is '${cellVal}'.`,
-              cypher: `MATCH (r:Row) WHERE toLower(toString(r.${h})) = '${cellVal.toLowerCase()}' RETURN count(r) AS count`,
-              result: [{ count: matches.length }],
-              grounded: true
-            };
-          }
-        }
-      }
-
-      // PATTERN 6: Aggregations (Average, Max, Min, Sum)
+      // PATTERN 4: Aggregations (Average, Max, Min, Sum)
       const isAvg = /\b(average|avg|mean)\b/i.test(q_lower);
       const isMax = /\b(highest|maximum|max)\b/i.test(q_lower);
       const isMin = /\b(lowest|minimum|min)\b/i.test(q_lower);
@@ -802,7 +806,7 @@
         }
       }
 
-      // PATTERN 7: Distinct listing
+      // PATTERN 5: Distinct listing
       if (q_lower.includes("list") || q_lower.includes("show all") || q_lower.includes("unique") || q_lower.includes("distinct") || q_lower.includes("what are the")) {
         for (const h of headers) {
           const singular = h.toLowerCase().replace(/s$/, "");
@@ -818,8 +822,14 @@
         }
       }
 
-      // PATTERN 8: Direct word search fallback
-      const words = q_lower.split(/\s+/).map(w => w.replace(/[^a-z0-9]/g, "")).filter(w => w.length > 2);
+      // PATTERN 6: Direct word search fallback (excluding stop words and generic entity nouns)
+      const stopWords = new Set([
+        "count", "how", "many", "what", "is", "the", "tell", "me", "show", "give", "who", "are",
+        "there", "in", "of", "for", "all", "total", "number", "find", "get", "rows", "records",
+        "data", "dataset", "graph", "where", "which", "can", "you", "please", "with", "from",
+        "employee", "employees", "product", "products", "item", "items", "user", "users"
+      ]);
+      const words = q_lower.split(/\s+/).map(w => w.replace(/[^a-z0-9]/g, "")).filter(w => w.length > 2 && !stopWords.has(w));
       for (const w of words) {
         const matchResult = findMatchingRow(w);
         if (matchResult) {
